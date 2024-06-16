@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>POS Software Dashboard</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #004494;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow-y: hidden;
+      }
+
+      header {
+        padding: 20px;
+        text-align: center;
+        justify-content: space-between;
+        height: 11vh;
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: 2em;
+      }
+
+      .logo {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 100px;
+      }
+
+      main {
+        flex-grow: 0;
+        height: 80vh;
+        overflow-y: hidden;
+      }
+
+      .page {
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        height: 72vh;
+        overflow: hidden;
+      }
+
+      nav {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+      }
+
+      .nav-icons {
+        display: flex;
+        border: 1px broken #ccc;
+        border-radius: 5px;
+        padding: 5px;
+        margin: 5px;
+        justify-self: center;
+        justify-content: center;
+        justify-items: center;
+        background-color: #004494;
+        width: 10%;
+        height: 50px;
+      }
+
+      .nav-icons:hover {
+        cursor: pointer;
+      }
+
+      #homepage {
+        display: flex;
+        flex: 1;
+        padding: 20px;
+        height: 70vh;
+        width: 100%;
+      }
+
+      .content {
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        flex-grow: 1; /* Grow to take available space */
+        margin-right: 20px; /* Provide space between content and sidebar */
+        top: 5px;
+        height: 70vh;
+      }
+
+      .sidebar {
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 20%;
+        height: 70vh;
+      }
+
+      footer {
+        color: #fff;
+        text-align: center;
+        padding: 10px;
+        transform: 0, -50;
+        height: 5vh;
+      }
+      // calculator
+
+      .calculator {
+        width: 100%;
+        margin: 1px;
+        padding: 5px;
+        border: 2px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+      }
+
+      .calculator input {
+        width: 87%;
+        height: 30px;
+        margin-bottom: 10px;
+        text-align: right;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        padding: 0 10px;
+      }
+
+      .calculator .keys button {
+        width: 46px;
+        height: 46px;
+        margin: 2px;
+        font-size: 20px;
+        border: none;
+        border-radius: 5px;
+        background-color: #e4e4e4;
+        cursor: pointer;
+      }
+
+      .calculator .keys button:hover {
+        background-color: #d4d4d4;
+      }
+
+      #newSale {
+        width: 95%;
+        border-collapse: collapse; /* Collapse the borders between cells */
+        justify-content: left;
+        text-align: left;
+        margin-left: 30px;
+        margin-top: 20px;
+      }
+      #newSale tr th {
+        position: sticky;
+        top: 0;
+        background-color: #f1f1f1; /* Adjust the background color as needed */
+        z-index: 1; /* Ensure the header stays on top */
+      }
+      #newSale tr th:nth-child(1) {
+        width: 50%;
+      }
+      #newSale tr th:nth-child(2) {
+        width: 10%;
+      }
+
+      #newSale tr td:nth-child(1) {
+        width: 50%;
+      }
+      #newSale tr td:nth-child(2) {
+        width: 10%;
+      }
+
+      #searchDiv {
+        position: fixed;
+        top: 10px;
+        right: 5px;
+        width: 20%;
+        height: 2rem;
+      }
+
+      #inv-top {
+        height: 25vh;
+        border: 1px solid;
+        margin: 5px;
+        display: flex;
+        flex-direction: horizontal;
+      }
+
+      #inv-bottom {
+        height: 45vh;
+        border: 1px solid;
+        margin: 5px;
+      }
+
+      .table-container {
+        width: 100%;
+        max-height: 42vh; /* Adjust the max-height as needed */
+        overflow-y: auto;
+        margin: 20px 0;
+        border: 1px solid #ddd;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead th {
+        position: sticky;
+        top: 0;
+        background-color: #f1f1f1; /* Adjust the background color as needed */
+        z-index: 1; /* Ensure the header stays on top */
+      }
+
+      thead,
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+
+      tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+      .button {
+        background-color: #0056b3;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      .button:hover {
+        background-color: #004494;
+      }
+
+      .inv-button {
+        background-color: #0056b3;
+        color: white;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .inv-button:hover {
+        background-color: #004494;
+      }
+      #invForm-container {
+        width: 50%;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #f9f9f9;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        z-index: 1000; /* Ensure it is above other content */
+        display: none; /* Hide initially */
+      }
+
+      #addsearch {
+        position: absolute;
+        display: block; /* Initially hidden */
+        background-color: white;
+        /*border: 1px solid #ddd;*/
+        max-height: 200px; /* Limit the height if you have many results */
+        overflow-y: auto; /* Add scroll if the results exceed the max height */
+        z-index: 1000; /* Ensure it's on top of other elements */
+        width: 100%; /* Adjust width as needed */
+      }
+
+      .resultAddSearch {
+        padding: 10px;
+        cursor: pointer;
+      }
+
+      .resultAddSearch:hover {
+        background-color: #f0f0f0;
+        width: 50%;
+        opacity: 0.3;
+      }
+      .btn-x {
+        color: red;
+      }
+      .btn-x:hover {
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <img
+        src="{{url_for('static', filename='logo.png')}}"
+        alt="Your Logo"
+        class="logo"
+      />
+
+      <nav class="page-nav">
+        <button class="nav-icons" onclick="refreshDashboard()">
+          <p>HOME</p>
+        </button>
+
+        <button class="nav-icons" onclick="showPage('page2')">
+          <p>Recent Sales</p>
+        </button>
+
+        <button class="nav-icons" onclick="showPage('page3')">
+          <p>Return Item</p>
+        </button>
+
+        <button class="nav-icons" onclick="showPage('page4')">
+          <p>Incidents & Reports</p>
+        </button>
+
+        <button
+          class="nav-icons"
+          id="inventory-nav"
+          onclick="manageInventory('{{access_level}}')"
+        >
+          <p>Manage Inventory</p>
+        </button>
+
+        <div
+          class="nav-icons"
+          style="display: flex; justify-content: center; align-items: center"
+        >
+          <a href="{{url_for('logout')}}"><p>Logout</p></a>
+        </div>
+      </nav>
+
+      <p style="color: white; text-decoration: underline">
+        {{shop_name}} ({{ name }})
+      </p>
+      <p id="currency" style="display: none">{{currency}}</p>
+      <div id="searchDiv" style="display: block">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search for a product..."
+        />
+        <div id="resultList"></div>
+      </div>
+    </header>
+    <main>
+      <div id="page1" class="page" style="display: block">
+        <div id="homepage">
+          <section class="content">
+            <div id="top-content" style="height: 60vh; overflow-y: auto">
+              <table id="newSale">
+                <!--adding items through search-->
+                <div id="addsearch"></div>
+                <!---->
+                <input
+                  style="position: absolute; left: -99999px"
+                  type="text"
+                  id="barcode-input"
+                  name="barcode"
+                  autofocus
+                />
+                <thead>
+                  <tr>
+                    <th><u>S/N</u></th>
+                    <th><u>Item</u></th>
+                    <th><u>Qty</u></th>
+                    <th><u>Price ({{currency}})</u></th>
+                    <th><u>Total ({{currency}})</u></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="cart-body">
+                  <!-- Items rows will be dynamically added here -->
+                </tbody>
+              </table>
+            </div>
+            <div
+              id="bottom-content"
+              style="
+                display: block;
+                margin-left: 10px;
+                justify-content: bottom;
+                justify-item: bottom;
+                height: 8vh;
+              "
+            >
+              <div id="add-item" style="display: none; width: 100%">
+                <form onsubmit="addToCart(event)">
+                  <input type="hidden" id="sku" name="sku" />
+                  <input
+                    id="item"
+                    type="text"
+                    name="item"
+                    placeholder="item (or service)"
+                    style="
+                      text-align: center;
+                      font-size: 1.2rem;
+                      width: 30%;
+                      height: 40px;
+                    "
+                  />
+
+                  <input
+                    id="quantity"
+                    type="number"
+                    name="quantity"
+                    min="1"
+                    style="
+                      width: 10%;
+                      text-align: center;
+                      font-size: 1.5rem;
+                      height: 40px;
+                    "
+                  />
+                  <input
+                    id="price"
+                    type="display"
+                    name="price"
+                    min="1"
+                    step="1"
+                    placeholder="price"
+                    style="width: 20%; font-size: 1.5rem; height: 40px"
+                    readonly
+                  />
+                  <button
+                    type="button"
+                    onclick="addToCart()"
+                    style="height: 40px; font-size: 1rem; color: #00ff00"
+                  >
+                    ADD TO CART
+                  </button>
+                  <button
+                    type="submit"
+                    onclick="discardItem()"
+                    style="height: 40px; font-size: 1rem; color: red"
+                  >
+                    Close[X]
+                  </button>
+                </form>
+              </div>
+              <div style="display: flex; flex-direction: horizontal">
+                <button
+                  id="manual-add"
+                  onclick="addItem()"
+                  style="
+                    height: 40px;
+                    font-size: 1rem;
+                    color: #00ff00;
+                    margin-right: 20%;
+                  "
+                >
+                  ADD ITEM
+                </button>
+                <div id="vat-box" style="width: 40%">
+                  <p id="vat_rate" style="display: none">{{vat_rate}}</p>
+                  VAT ({{vat_rate}}%):
+                  <p id="vat"></p>
+                </div>
+                <div id="total-box" style="width: 40%">
+                  GRAND TOTAL ({{currency}}):
+                  <p id="grandTotal">{{grand_total}}</p>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="sidebar">
+            <h2>Calculator</h2>
+            <div class="calculator">
+              <input type="text" id="display" readonly />
+              <div class="keys">
+                <button onclick="appendNumber('1')">1</button>
+                <button onclick="appendNumber('2')">2</button>
+                <button onclick="appendNumber('3')">3</button>
+                <button onclick="appendNumber('4')">4</button>
+                <button onclick="appendNumber('5')">5</button>
+                <button onclick="appendNumber('6')">6</button>
+                <button onclick="appendNumber('7')">7</button>
+                <button onclick="appendNumber('8')">8</button>
+                <button onclick="appendNumber('9')">9</button>
+                <button onclick="appendNumber('0')">0</button>
+                <button onclick="appendOperator('+')">+</button>
+                <button onclick="appendOperator('-')">-</button>
+                <button onclick="appendOperator('*')">*</button>
+                <button onclick="appendOperator('/')">/</button>
+                <button onclick="clearDisplay()">C</button>
+                <button onclick="calculateResult()">=</button>
+              </div>
+            </div>
+            <br />
+            <div class="checkout">
+              <button
+                style="
+                  width: 100%;
+                  background: #00ff00;
+                  height: 50px;
+                  border-radius: 5%;
+                "
+                onclick="checkout()"
+              >
+                CHECKOUT</button
+              ><br /><br />
+              <button
+                id="clearCartBtn"
+                style="
+                  width: 100%;
+                  background: red;
+                  height: 50px;
+                  border-radius: 5%;
+                "
+                onclick="clearCart()"
+              >
+                CLEAR CART
+              </button>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div id="page2" class="page" style="display: none">
+        <div>
+          <table class="recent-table">
+            <h2>RECENT TRANSACTIONS</h2>
+            <thead>
+              <tr>
+                <th>Receipt Number</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="transTableBody">
+              {% for i in recent_trans %}
+              <tr class="trans_row">
+                <td>{{ i.trans_receipt }}</td>
+                <td>{{ i.trans_date }}</td>
+                <td>{{ i.trans_total }}</td>
+                <td>
+                  <button onclick="reprintReceipt('{{ i.trans_receipt }}')">
+                    Reprint receipt
+                  </button>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="page3" class="page" style="display: none">
+        <h2>RETURN ITEM</h2>
+        <form id="return-items-form">
+          <label for="order-number">Receipt Number</label>
+          <input type="text" id="order-number" name="order_number" required />
+
+          <label for="item-sku">Item SKU</label>
+          <input type="text" id="item-sku" name="item_sku" required />
+
+          <label for="quantity">Quantity</label>
+          <input type="number" id="item-quantity" name="quantity" required />
+
+          <label for="reason">Reason for Return</label>
+          <textarea id="reason" name="reason" rows="4" required></textarea>
+
+          <input
+            type="hidden"
+            id="attendant"
+            name="attendant"
+            value="{{name}}"
+            required
+          />
+
+          <button type="submit">Submit Return</button>
+        </form>
+      </div>
+
+      <div id="page4" class="page" style="display: none">
+        <div
+          class="container"
+          style="display: flex; flex-direction: horizontal"
+        >
+          <div style="width: 50%">
+            <h2><u>Report Incident</u></h2>
+            <form id="reportForm">
+              <input
+                type="hidden"
+                id="reporter"
+                name="reporter"
+                value="{{name}}"
+                style="border: none"
+                required
+              />
+
+              <input
+                type="hidden"
+                id="shop"
+                name="location"
+                value="{{shop_name}}"
+                style="border: none"
+                required
+              />
+
+              <label for="incident">Incident Description:</label><br />
+              <textarea
+                id="incident"
+                name="incident"
+                style="height: 25vh; width: 80%"
+                required
+              ></textarea
+              ><br />
+
+              <button type="submit">Submit Report</button>
+            </form>
+          </div>
+          <div style="width: 50%">
+            <h2><u>Report Expenditure</u></h2>
+            <form id="expForm">
+              <input
+                type="hidden"
+                id="reporter2"
+                name="reporter"
+                value="{{name}}"
+                style="border: none"
+                required
+              />
+
+              <input
+                type="hidden"
+                id="shop2"
+                name="location"
+                value="{{shop_name}}"
+                style="border: none"
+                required
+              />
+
+              <label for="category">Category:</label>
+              <select id="category" name="category" required>
+                <option value="office">Office</option>
+                <option value="travel">Travel</option>
+                <option value="supplies">Supplies</option>
+                <option value="food">Lunch</option>
+                <option value="other">Other</option></select
+              ><br /><br />
+
+              <label for="expense-description">Expense Description:</label
+              ><br />
+              <textarea
+                id="expense-description"
+                name="description"
+                style="height: 25vh; width: 45vw"
+                placeholder="Describe the expenditure"
+                required
+              ></textarea
+              ><br /><br />
+
+              <label for="amount">Amount:</label>
+              <input
+                type="number"
+                id="amount"
+                name="amount"
+                step="0.01"
+                placeholder="Enter amount"
+                required
+              /><br /><br />
+
+              <button type="submit">Submit Expenditure</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div id="page5" class="page" style="display: none">
+        <div id="inv-top">
+          <div style="margin: 10px; width: 20%">
+            <div class="inv-button" onclick="openInvForm()">
+              <p>ADD</p>
+            </div>
+            <br /><br />
+            <div>
+              <input type="text" id="remove-stock" name="sku" />
+              <button onclick="removeStock()">Remove Stock</button>
+            </div>
+            <div id="invForm-container">
+              <h2>Add New Item To Inventory</h2>
+              <form id="invForm" onsubmit="addStock(event)">
+                <label for="inv-item">Item Name:</label><br />
+                <input
+                  type="text"
+                  id="inv-item"
+                  name="item"
+                  required
+                /><br /><br />
+
+                <label for="inv-description">Description:</label><br />
+                <textarea
+                  style="width: 90%; height: 3rem"
+                  id="inv-description"
+                  name="description"
+                  required
+                ></textarea
+                ><br /><br />
+
+                <label for="inv-sku">SKU:</label><br />
+                <input
+                  type="text"
+                  id="inv-sku"
+                  name="sku"
+                  required
+                /><br /><br />
+
+                <label for="inv-upc">UPC/EAN:</label><br />
+                <input
+                  type="text"
+                  value=""
+                  id="inv-upc"
+                  name="upc"
+                  required
+                /><br /><br />
+
+                <label for="inv-quantity">Quantity:</label><br />
+                <input
+                  min="0"
+                  type="number"
+                  id="inv-quantity"
+                  name="quantity"
+                  required
+                /><br /><br />
+
+                <label for="inv-price">Price:</label><br />
+                <input
+                  type="number"
+                  step="0.01"
+                  id="inv-price"
+                  name="price"
+                  required
+                /><br /><br />
+
+                <button type="submit">Add Item</button>
+                <button type="button" onclick="closeInvForm()">Cancel</button>
+              </form>
+            </div>
+          </div>
+          <div>
+            <h2><u>Stats</u></h2>
+          </div>
+        </div>
+        <div id="inv-bottom">
+          <div class="table-container">
+            <table id="inventoryTable">
+              <thead>
+                <tr>
+                  <th>ITEM</th>
+                  <th>SKU</th>
+                  <th>UPC/EAN</th>
+                  <th>DESCRIPTION</th>
+                  <th>STOCK</th>
+                  <th>PRICE ({{currency}})</th>
+                  <th>ACTION</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- inventory -->
+                {% for i in inventory %}
+                <tr id="sku-{{i.sku}}">
+                  <td>{{i.item}}</td>
+                  <td>{{i.sku}}</td>
+                  <td>{{i.upc}}</td>
+                  <td>{{i.description}}</td>
+                  <td>
+                    <input
+                      type="text"
+                      value="{{i.quantity}}"
+                      id="qty-{{i.sku}}"
+                    />
+                  </td>
+                  <td>
+                    <input type="text" value="{{i.price}}" id="prc-{{i.sku}}" />
+                  </td>
+                  <td>
+                    <button
+                      class="button"
+                      onclick="updateInventory('{{i.sku}}', document.getElementById('qty-{{i.sku}}').value, document.getElementById('prc-{{i.sku}}').value)"
+                    >
+                      Update
+                    </button>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer class="footer">
+      <p>&copy Dartfox.org. All rights reserved.</p>
+    </footer>
+    <script>
+      //________________________LOCAL STORAGE_______________________
+      function displayCartItems() {
+        // Retrieve items from local storage
+        let items = JSON.parse(localStorage.getItem("cartItems")) || [];
+
+        // Reference to the table body
+        let tableBody = document.getElementById("cart-body");
+
+        // Clear existing rows
+        tableBody.innerHTML = "";
+
+        // Loop through items and create table rows
+        items.forEach((item, index) => {
+          let row = document.createElement("tr");
+          row.id = `row-${index + 1}`;
+          row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${item.item}</td>
+            <td>${item.quantity}</td>
+            <td>${item.price}</td>
+            <td class="total">${item.total}</td>
+            <td><p class="btn-x" onclick="removeFromCart('row-${
+              index + 1
+            }')">[X]</p></td>
+          `;
+          tableBody.appendChild(row);
+          vatAndTotal();
+        });
+      }
+
+      // Call displayCartItems when the dashboard page is loaded or ready
+      document.addEventListener("DOMContentLoaded", function () {
+        displayCartItems();
+      });
+
+      //__________________________RECORD EXPENDITURE__________________
+      document
+        .getElementById("expForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault(); // Prevent the default form submission
+
+          // Get the form data
+          const formData = new FormData(event.target);
+
+          // Convert the form data to an object
+          const data = {};
+          formData.forEach((value, key) => {
+            data[key] = value;
+          });
+
+          // Send the form data to the server using fetch
+          fetch("/report_expenditure", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => {
+              if (response.ok) {
+                return response.json();
+              }
+              throw new Error("Network response was not ok.");
+            })
+            .then((data) => {
+              alert(data.message);
+              // Clear the form fields
+              event.target.reset();
+            })
+            .catch((error) => {
+              console.error(
+                "There was a problem with the fetch operation:",
+                error
+              );
+              alert("There was an error submitting the report.");
+            });
+        });
+
+      //______________________________REPORT INCIDENT____________________
+      document
+        .getElementById("reportForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault(); // Prevent the default form submission
+
+          // Get the form data
+          const formData = new FormData(event.target);
+
+          // Convert the form data to an object
+          const data = {};
+          formData.forEach((value, key) => {
+            data[key] = value;
+          });
+
+          // Send the form data to the server using fetch
+          fetch("/report_incident", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => {
+              if (response.ok) {
+                return response.json();
+              }
+              throw new Error("Network response was not ok.");
+            })
+            .then((data) => {
+              alert(data.message);
+              // Clear the form fields
+              event.target.reset();
+            })
+            .catch((error) => {
+              console.error(
+                "There was a problem with the fetch operation:",
+                error
+              );
+              alert("There was an error submitting the report.");
+            });
+        });
+
+      //___________________________RETURN ITEMS___________________________
+      document
+        .getElementById("return-items-form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault(); // Prevent the default form submission
+
+          let confirmed = confirm("Confirm return");
+          if (confirmed) {
+            let orderNumber = document.getElementById("order-number").value;
+            let itemSku = document.getElementById("item-sku").value;
+            let quantity = document.getElementById("item-quantity").value;
+            let reason = document.getElementById("reason").value;
+            let attendant = document.getElementById("attendant").value;
+
+            let data = {
+              order_number: orderNumber,
+              item_sku: itemSku,
+              quantity: quantity,
+              reason: reason,
+              attendant: attendant,
+            };
+
+            fetch("/return_item", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                alert(data.message);
+              })
+              .catch((error) => {
+                console.error("Error:", error);
+                alert("An error occurred. Please try again later.");
+              });
+          }
+        });
+
+      //______________________BARCODE SCANNER________________________________
+
+      function reprintReceipt(receiptNumber) {
+        //alert("Receipt No: ", receipt_number);
+        //let url = `/reprint_receipt?receipt_number=${encodeURIComponent(receiptID)}`;
+        //fetch(url, { method: "POST" })
+        fetch(`/reprint_receipt/${receiptNumber}`, { method: "POST" })
+          .then((response) => response.json()) // Ensure response is parsed as JSON
+          .then((data) => {
+            if (data.receipt) {
+              alert("Receipt reprinted successfully!");
+              console.log(data.receipt); // Log the receipt data
+            } else {
+              alert("Error: " + data.message);
+            }
+          })
+          .catch((error) => console.error("Error reprinting receipt:", error));
+      }
+
+      document
+        .getElementById("barcode-input")
+        .addEventListener("change", function () {
+          let bs = document.getElementById("barcode-input").value;
+          fetch(`/barcode_search?q=${encodeURIComponent(bs)}`)
+            .then((response) => response.json())
+            .then((data) => {
+              //alert(data.data); //debut alert
+              addToCartBc(data);
+            })
+            .catch((error) => {
+              console.error("Error fetching search results:", error);
+            });
+        });
+
+      function addToCartBc(data) {
+        // Remove the square brackets if present
+        let rawData = data.data.replace(/^\[|\]$/g, ""); // Remove leading and trailing square brackets
+
+        // Split the string by commas and trim any leading/trailing whitespace
+        let parts = rawData.split(",").map((part) => part.trim());
+
+        // Create an object from the parts
+        let obj = {};
+        parts.forEach((part) => {
+          let [key, value] = part
+            .split(":")
+            .map((item) => item.trim().replace(/'/g, "")); // Remove single quotes
+          obj[key] = value;
+        });
+
+        // Access the values of 'item' and 'price'
+        let item = obj.item;
+        let price = obj.price;
+        let quantity = 1;
+        let sku = obj.sku;
+
+        barcodeAddToCart(item, quantity, price, sku);
+        // debugging
+        //console.log("Item:", item);
+        // console.log("Price:", price);
+        //console.log("Quantity: ", quantity);
+      }
+
+      function barcodeAddToCart(item, quantity, price, sku) {
+        let newItem = {
+          sku: sku,
+          item: item,
+          quantity: quantity,
+          price: price,
+          total: price * quantity,
+        };
+        let items = JSON.parse(localStorage.getItem("cartItems")) || [];
+        items.push(newItem);
+        localStorage.setItem("cartItems", JSON.stringify(items));
+        location.reload();
+      }
+
+      //_________________________________________________________________
+
+      function updateInventory(sku, quantity, price) {
+        let url = `/update_inventory?sku=${encodeURIComponent(
+          sku
+        )}&quantity=${encodeURIComponent(quantity)}&price=${encodeURIComponent(
+          price
+        )}`;
+
+        fetch(url, {
+          method: "POST",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            alert(data.message);
+          })
+          .catch((error) => {
+            alert(error.message);
+          });
+      }
+
+      const itemInput = document.getElementById("item");
+      const quantity = document.getElementById("quantity");
+      const price = document.getElementById("price");
+      const sku = document.getElementById("sku");
+      const resultAddSearch = document.getElementById("addsearch");
+
+      itemInput.addEventListener("input", () => {
+        const addSearch = itemInput.value;
+        if (addSearch.length >= 3) {
+          // Start searching after the user types 3 or more characters
+          fetch(`/search?q=${encodeURIComponent(addSearch)}`)
+            .then((response) => response.json())
+            .then((data) => {
+              updateAddField(data);
+            })
+            .catch((error) => {
+              console.error("Error fetching search results:", error);
+            });
+        } else {
+          resultAddSearch.innerHTML = ""; // Clear results if addSearch is too short
+        }
+      });
+
+      function updateAddField(data) {
+        resultAddSearch.innerHTML = ""; // Clear previous results
+        data.forEach((item) => {
+          let currency = document.getElementById("currency").textContent;
+          const rez = document.createElement("div");
+          rez.className = "resultAddSearch";
+          rez.textContent = item.item + " " + currency + item.price; // Assuming the returned items have an 'item' property
+
+          // Add a click event listener to populate the form fields
+          rez.addEventListener("click", () => {
+            itemInput.value = item.item;
+            quantity.value = 1;
+            price.value = item.price;
+            sku.value = item.sku;
+            resultAddSearch.innerHTML = "";
+          });
+
+          resultAddSearch.appendChild(rez);
+        });
+      }
+
+      //__________________________________________________________________________________
+
+      //_________________________________SEARCH INVENTORY_________________________________
+      const searchInput = document.getElementById("searchInput");
+      const resultList = document.getElementById("resultList");
+
+      searchInput.addEventListener("input", () => {
+        const query = searchInput.value;
+        if (query.length >= 3) {
+          // Start searching after the user types 3 or more characters
+          fetch(`/search?q=${encodeURIComponent(query)}`)
+            .then((response) => response.json())
+            .then((data) => {
+              updateResults(data);
+            })
+            .catch((error) => {
+              console.error("Error fetching search results:", error);
+            });
+        } else {
+          resultList.innerHTML = ""; // Clear results if query is too short
+        }
+      });
+
+      function updateResults(data) {
+        resultList.innerHTML = ""; // Clear previous results
+        data.forEach((item) => {
+          const div = document.createElement("div");
+          div.className = "resultItem";
+          div.textContent = item.item + "(" + item.quantity + ")"; // Assuming the returned items have a 'name' property
+          resultList.appendChild(div);
+        });
+      }
+      //_______________________________________________________________________
+      function addStock(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        const item = document.getElementById("inv-item").value;
+        const description = document.getElementById("inv-description").value;
+        const sku = document.getElementById("inv-sku").value;
+        const upc = document.getElementById("inv-upc").value;
+        const quantity = document.getElementById("inv-quantity").value;
+        const price = document.getElementById("inv-price").value;
+
+        console.log("Item:", item);
+        console.log("Description:", description);
+        console.log("SKU:", sku);
+        console.log("UPC:", upc);
+        console.log("Quantity:", quantity);
+        console.log("Price:", price);
+
+        fetch("/add_stock", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            item: item,
+            description: description,
+            sku: sku,
+            upc: upc,
+            quantity: quantity,
+            price: price,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            alert(data.message);
+            if (data.success) {
+              document.getElementById("invForm").reset();
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            alert("There was a problem adding the stock.");
+          });
+      }
+
+      function removeStock() {
+        const sku = document.getElementById("remove-stock").value;
+        fetch("/remove_stock", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ sku: sku }),
+        })
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error("Item not in inventory!");
+            }
+          })
+          .then((data) => {
+            const row = document.getElementById(`sku-${sku}`);
+            if (row) {
+              row.remove();
+              alert("Item removed from inventory!");
+            }
+          })
+          .catch((error) => {
+            alert(error.message);
+          });
+      }
+
+      function openInvForm() {
+        document.getElementById("invForm-container").style.display = "block";
+        document.getElementById("overlay").style.display = "block";
+      }
+
+      function closeInvForm() {
+        document.getElementById("invForm-container").style.display = "none";
+        document.getElementById("overlay").style.display = "none";
+      }
+
+      function vatAndTotal() {
+        let totals = document.querySelectorAll(".total");
+        let grandTotal = 0;
+        let vat = 0;
+        let vat_rate =
+          parseFloat(document.getElementById("vat_rate").textContent) || 0; // Ensure vat_rate is a number
+
+        totals.forEach((totalCell) => {
+          let totalValue = parseFloat(totalCell.textContent) || 0; // Ensure totalValue is a number
+          grandTotal += totalValue;
+          vat += totalValue * (vat_rate / 100);
+        });
+
+        document.getElementById("grandTotal").textContent = (
+          grandTotal + vat
+        ).toFixed(2);
+        document.getElementById("vat").textContent = vat.toFixed(2);
+      }
+
+      // Call the function initially to set the grand total and VAT
+      vatAndTotal();
+
+      //___________________________CHECKOUT SECTION__________________________
+      function checkout() {
+        let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+
+        if (cartItems.length === 0) {
+          alert("Your cart is empty. Add items before checkout.");
+          return;
+        }
+
+        let confirmed = confirm("Confirm Checkout!");
+        if (confirmed) {
+          let payload = {
+            items: cartItems,
+          };
+
+          let url = "/checkout";
+          let options = {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          };
+
+          fetch(url, options)
+            .then((response) => {
+              if (response.ok) {
+                localStorage.removeItem("cartItems");
+                alert("Checkout successful!");
+                location.reload();
+              } else {
+                alert("Error during checkout.");
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              alert("Error during checkout.");
+            });
+        }
+      }
+
+      function clearCart() {
+        let confirmed = confirm("Are you sure you want to clear the cart?");
+        if (confirmed) {
+          // Clear local storage
+          localStorage.removeItem("cartItems");
+          // Reload the page to reflect the cleared cart
+          location.reload();
+        }
+      }
+
+      function addToCart(event) {
+        if (event) {
+          event.preventDefault();
+        }
+
+        let sku = document.getElementById("sku").value;
+        let item = document.getElementById("item").value;
+        let quantity = document.getElementById("quantity").value;
+        let price = document.getElementById("price").value;
+
+        let newItem = {
+          sku: sku,
+          item: item,
+          quantity: quantity,
+          price: price,
+          total: price * quantity,
+        };
+
+        let items = JSON.parse(localStorage.getItem("cartItems")) || [];
+        items.push(newItem);
+        localStorage.setItem("cartItems", JSON.stringify(items));
+        location.reload();
+      }
+
+      function removeFromCart(rowId) {
+        // Remove item from local storage based on rowId
+        let items = JSON.parse(localStorage.getItem("cartItems")) || [];
+
+        // Extract the index from rowId (assuming rowId is like 'row-1', 'row-2', etc.)
+        let index = parseInt(rowId.split("-")[1]) - 1; // Convert rowId to index (adjust for 0-based index)
+
+        // Check if index is valid
+        if (index >= 0 && index < items.length) {
+          items.splice(index, 1); // Remove item from array
+          localStorage.setItem("cartItems", JSON.stringify(items)); // Update local storage
+        }
+
+        // Update table display
+        displayCartItems();
+      }
+
+      function discardItem(event) {
+        if (event) {
+          event.preventDefault(); // Correctly use preventDefault() on the event object
+        }
+        document.getElementById("add-item").style.display = "none";
+        document.getElementById("manual-add").style.display = "block";
+        document.getElementById("vat-box").style.display = "block";
+        document.getElementById("total-box").style.display = "block";
+      }
+
+      function addItem() {
+        document.getElementById("add-item").style.display = "flex";
+        document.getElementById("manual-add").style.display = "none";
+        document.getElementById("vat-box").style.display = "none";
+        document.getElementById("total-box").style.display = "none";
+      }
+
+      function appendNumber(number) {
+        document.getElementById("display").value += number;
+      }
+
+      function appendOperator(operator) {
+        const display = document.getElementById("display");
+        const lastChar = display.value.slice(-1);
+        if (["+", "-", "*", "/"].includes(lastChar)) {
+          return;
+        }
+        display.value += operator;
+      }
+
+      function clearDisplay() {
+        document.getElementById("display").value = "";
+      }
+
+      function calculateResult() {
+        const display = document.getElementById("display");
+        try {
+          display.value = eval(display.value);
+        } catch (e) {
+          display.value = "Error";
+        }
+      }
+
+      function refreshDashboard() {
+        showPage("page1");
+        location.reload();
+      }
+
+      function showPage(pageId) {
+        document.querySelectorAll(".page").forEach((page) => {
+          page.style.display = "none";
+        });
+        document.getElementById(pageId).style.display = "block";
+      }
+
+      function manageInventory(access_level) {
+        if (access_level === "admin") {
+          document.querySelectorAll(".page").forEach((page) => {
+            page.style.display = "none";
+          });
+          document.getElementById("page5").style.display = "block";
+        } else alert("YOU ARE NOT AUTHORIZED TO VIEW THIS PAGE!");
+      }
+    </script>
+  </body>
+</html>

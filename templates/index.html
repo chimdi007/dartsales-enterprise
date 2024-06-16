@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Page</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #004494;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      main#ui {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 300px;
+      }
+
+      #login {
+        display: block;
+      }
+      #login.active {
+        display: none;
+      }
+      #consolelogin {
+        display: none;
+      }
+      #consolelogin.active {
+        display: block;
+      }
+
+      fieldset {
+        border: none;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+      }
+      label {
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      input[type="text"],
+      input[type="password"] {
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 2px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box; /* Adds padding and border to the element's total width and height */
+      }
+      button {
+        background-color: #0056b3;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      button:hover {
+        background-color: #004494;
+      }
+      p {
+        font-size: 0.8em;
+        text-align: right;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="ui">
+      <h2>DARTSALE</h2>
+      <br />
+      <!-- Display flashed messages -->
+      {% with messages = get_flashed_messages() %} {% if messages %}
+      <ul>
+        {% for message in messages %}
+        <li style="color: red; font-size: 1.5rem">{{ message }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %} {% endwith %}
+      <!-- Login form -->
+      <fieldset id="login">
+        <form action="/login" method="POST">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" /><br />
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" /><br />
+          <button type="submit">Login</button>
+        </form>
+      </fieldset>
+      <br />
+      <fieldset id="consolelogin">
+        <p style="color: red">ADMIN CONSOLE</p>
+        <form action="/appconsole" method="POST">
+          <label for="shop_key">SHOP KEY:</label>
+          <input type="text" id="shop_key" name="shop_key" /><br />
+          <label for="password">SHOP PASSWORD:</label>
+          <input type="password" id="password" name="password" /><br />
+          <button type="submit">Login</button>
+        </form>
+      </fieldset>
+      <p>&copy; 2024 Dartfox.org. All rights reserved.</p>
+    </main>
+    <footer>
+      <div
+        id="console-btn"
+        style="
+          position: fixed;
+          left: 5px;
+          bottom: 5px;
+          height: 40px;
+          width: 40px;
+          margin: 20px;
+        "
+      >
+        <button onclick="toggleForm()"></button>
+      </div>
+    </footer>
+
+    <script>
+      function toggleForm() {
+        let x = document.getElementById("login");
+        let y = document.getElementById("consolelogin");
+        x.classList.toggle("active");
+        y.classList.toggle("active");
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+
+    height: 100vh;
+    background-color: #f9f9fb; /* Optional: Set a background color */
+}
+
+#ui {
+    width: 40%;
+    height: 40%;
+    border: 3px solid;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(99, 116, 148);
+}
+
+
+#login{
+    width:80%;
+    transform: translate(10%, 10%)
+}
