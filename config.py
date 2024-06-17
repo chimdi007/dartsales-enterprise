@@ -15,7 +15,7 @@ users_path = os.path.join(current_directory, 'database', 'users')
 sales_path = os.path.join(current_directory, 'database', 'sales')
 config_path = os.path.join(current_directory, 'database', 'config')
 inventory_path = os.path.join(current_directory, 'database', 'inventory')
-ownership_path = os.path.join(current_directory, 'database', 'ownership')
+#ownership_path = os.path.join(current_directory, 'database', 'ownership')
 reports_path = os.path.join(current_directory, 'database', 'reports')
 
 users =[]

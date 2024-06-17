@@ -3,56 +3,8 @@
         "description": "monkey see monkey do",
         "item": "monkey see",
         "price": 1000.0,
-        "quantity": 2,
+        "quantity": 10,
         "sku": "mnky",
         "upc": "LPNWE238714760"
-    },
-    {
-        "description": "Viking Revolution unscented beard oil, 100% natural",
-        "item": "Beard oil",
-        "price": 1200.0,
-        "quantity": 28,
-        "sku": "vbo",
-        "upc": "X0011SDKN"
-    },
-    {
-        "description": "plastic bag",
-        "item": "ASDA bag",
-        "price": "0.99",
-        "quantity": 10,
-        "sku": "557",
-        "upc": "505249361841>"
-    },
-    {
-        "description": "fsdfsd",
-        "item": "fsdf",
-        "price": 0.99,
-        "quantity": 7,
-        "sku": "dsfsd",
-        "upc": "sdfs"
-    },
-    {
-        "description": "home made mango juice",
-        "item": "mango juice",
-        "price": 8.99,
-        "quantity": 10,
-        "sku": "JKDH",
-        "upc": "3759-472je"
-    },
-    {
-        "description": "home grown",
-        "item": "apple",
-        "price": 23.0,
-        "quantity": 4,
-        "sku": "app2",
-        "upc": "app1234"
-    },
-    {
-        "description": "hair brush",
-        "item": "comb",
-        "price": 79.99,
-        "quantity": 2,
-        "sku": "111223",
-        "upc": "1233"
     }
 ]

@@ -5,19 +5,5 @@
         "name": "admin",
         "password": "shop1",
         "username": "admin"
-    },
-    {
-        "access_level": "cashier",
-        "date": "Tue, 11 Jun 2024 20:13:59 GMT",
-        "name": "Dew Chiemelu",
-        "password": "Birthday19",
-        "username": "dewchi"
-    },
-    {
-        "access_level": "admin",
-        "date": "Tue, 11 Jun 2024 20:23:40 GMT",
-        "name": "Chimdi Reborn",
-        "password": "Birthday20",
-        "username": "chimdir"
     }
 ]
