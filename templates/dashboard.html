@@ -159,17 +159,17 @@
         z-index: 1; /* Ensure the header stays on top */
       }
       #newSale tr th:nth-child(1) {
-        width: 50%;
+        width: 5%;
       }
       #newSale tr th:nth-child(2) {
-        width: 10%;
+        width: 50%;
       }
 
       #newSale tr td:nth-child(1) {
-        width: 50%;
+        width: 5%;
       }
       #newSale tr td:nth-child(2) {
-        width: 10%;
+        width: 50%;
       }
 
       #searchDiv {
@@ -537,7 +537,7 @@
               <tr class="trans_row">
                 <td>{{ i.trans_receipt }}</td>
                 <td>{{ i.trans_date }}</td>
-                <td>{{ i.trans_total }}</td>
+                <td>{{currency}} {{ i.trans_total }}</td>
                 <td>
                   <button onclick="reprintReceipt('{{ i.trans_receipt }}')">
                     Reprint receipt
@@ -744,7 +744,7 @@
             </div>
           </div>
           <div>
-            <h2><u>Stats</u></h2>
+            <h2 onclick="testPrint()"><u>Stats</u></h2>
           </div>
         </div>
         <div id="inv-bottom">
@@ -796,9 +796,27 @@
       </div>
     </main>
     <footer class="footer">
+      <div id="test-print"></div>
       <p>&copy Dartfox.org. All rights reserved.</p>
     </footer>
     <script>
+      function testPrint() {
+        const printContent =
+          document.getElementById("inventoryTable").innerHTML;
+        const printWindow = window.open("", "", "height=70,width=70");
+        printWindow.document.write("<html><head><title>Print Section</title>");
+        printWindow.document.write(
+          "<style>body{font-family: Arial, sans-serif;}</style>"
+        ); // Add any styles needed
+        printWindow.document.write("</head><body >");
+        printWindow.document.write(printContent);
+        printWindow.document.write("</body></html>");
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+        printWindow.close();
+      }
+
       //________________________LOCAL STORAGE_______________________
       function displayCartItems() {
         // Retrieve items from local storage
@@ -961,23 +979,6 @@
         });
 
       //______________________BARCODE SCANNER________________________________
-
-      function reprintReceipt(receiptNumber) {
-        //alert("Receipt No: ", receipt_number);
-        //let url = `/reprint_receipt?receipt_number=${encodeURIComponent(receiptID)}`;
-        //fetch(url, { method: "POST" })
-        fetch(`/reprint_receipt/${receiptNumber}`, { method: "POST" })
-          .then((response) => response.json()) // Ensure response is parsed as JSON
-          .then((data) => {
-            if (data.receipt) {
-              alert("Receipt reprinted successfully!");
-              console.log(data.receipt); // Log the receipt data
-            } else {
-              alert("Error: " + data.message);
-            }
-          })
-          .catch((error) => console.error("Error reprinting receipt:", error));
-      }
 
       document
         .getElementById("barcode-input")
@@ -1240,7 +1241,7 @@
       vatAndTotal();
 
       //___________________________CHECKOUT SECTION__________________________
-      function checkout() {
+      async function checkout() {
         let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
 
         if (cartItems.length === 0) {
@@ -1263,20 +1264,84 @@
             body: JSON.stringify(payload),
           };
 
-          fetch(url, options)
-            .then((response) => {
-              if (response.ok) {
-                localStorage.removeItem("cartItems");
-                alert("Checkout successful!");
-                location.reload();
-              } else {
-                alert("Error during checkout.");
+          try {
+            let response = await fetch(url, options);
+            if (response.ok) {
+              let receiptNumber = await response.text(); // Fetch receipt number as text
+              localStorage.removeItem("cartItems");
+              //alert("Checkout successful!");
+
+              // Ask if the user wants to print the receipt
+              let printConfirmed = confirm("Successful! ...print the receipt?");
+              if (printConfirmed) {
+                // Fetch the receipt data using the receipt number in the URL
+                let receiptResponse = await fetch(
+                  `/print_receipt/${receiptNumber}`
+                );
+                let receiptData = await receiptResponse.json();
+                let receipt_str = receiptData.receipt;
+
+                // Print the receipt
+                const printWindow = window.open("", "", "height=500,width=800");
+                printWindow.document.write(
+                  "<html><head><title>Print Receipt</title></head><body>"
+                );
+                printWindow.document.write("<pre>" + receipt_str + "</pre>");
+                printWindow.document.write("</body></html>");
+                printWindow.document.close();
+                printWindow.focus();
+                printWindow.print();
+                printWindow.close();
               }
-            })
-            .catch((error) => {
-              console.error("Error:", error);
-              alert("Error during checkout.");
-            });
+
+              location.reload(); // Reload the page after checkout
+            } else {
+              alert("Error during checkout1.");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("No printer detected.");
+          }
+        }
+      }
+
+      async function reprintReceipt(receiptNumber) {
+        try {
+          // Fetch the receipt data using receiptNumber
+          let receiptResponse = await fetch(`/print_receipt/${receiptNumber}`);
+
+          // Check if the fetch operation was successful
+          if (!receiptResponse.ok) {
+            throw new Error(
+              `Failed to fetch receipt with number ${receiptNumber}`
+            );
+          }
+
+          // Parse the JSON response
+          let receiptData = await receiptResponse.json();
+          let receipt_str = receiptData.receipt;
+
+          // Print the receipt
+          const printWindow = window.open("", "", "height=500,width=800");
+          printWindow.document.write(
+            "<html><head><title>Print Receipt</title></head><body>"
+          );
+
+          // Adjust styles for 80mm width paper
+          printWindow.document.write(
+            "<pre style='white-space: pre-wrap; font-family: monospace;'>"
+          );
+          printWindow.document.write(receipt_str);
+          printWindow.document.write("</pre>");
+
+          printWindow.document.write("</body></html>");
+          printWindow.document.close();
+          printWindow.focus();
+          printWindow.print();
+          printWindow.close();
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Failed to fetch or print receipt.");
         }
       }
 

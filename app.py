@@ -1,6 +1,6 @@
 # app.py
 from flask import Flask, session, render_template, request, json, url_for
-from auth import auth, login, add_to_cart, clear_cart, checkout, dashboard, remove_stock, add_stock, search, remove_from_cart, update_inventory, barcode_search, reprint_receipt
+from auth import auth, login, add_to_cart, clear_cart, checkout, dashboard, remove_stock, add_stock, search, remove_from_cart, update_inventory, barcode_search, print_receipt
 from auth import return_item, report_incident, report_expenditure
 from config import config, appconsole, settings, change_password, create_user, app_configuration, delete_user, backup_sale, start_scheduler
 import os
@@ -85,9 +85,9 @@ def checkout_route():
 def remove_from_cart_route():
     return remove_from_cart()
 
-@app.route('/reprint_receipt/<receipt_number>', methods=['POST'])
-def reprint_receipt_route(receipt_number):
-    return reprint_receipt(receipt_number)
+@app.route('/print_receipt/<receipt_number>', methods=['POST', 'GET'])
+def print_receipt_route(receipt_number):
+    return print_receipt(receipt_number)
 
 @app.route('/return_item', methods=['POST'])
 def return_item_route():

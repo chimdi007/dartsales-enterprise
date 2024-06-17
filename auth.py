@@ -36,64 +36,48 @@ class Receipt:
         self.receipt_number = receipt_number
         self.items = items
         self.vat_rate = vat_rate
-        self.vat = self.calculate_vat()
         self.total = self.calculate_total()
+        self.vat = self.calculate_vat()
 
     def calculate_vat(self):
-        total = 0
-        for item in self.items:
-            total += int(item['quantity']) * float(item['price'])
-        vat = total * self.vat_rate / 100
+        total = sum(int(item['quantity']) * float(item['price']) for item in self.items)
+        vat = total * (self.vat_rate / 100)
         return vat
 
     def calculate_total(self):
-        total = 0
-        for item in self.items:
-            total += int(item['quantity']) * float(item['price'])
-        total_with_vat = total + self.calculate_vat()
-        return total_with_vat
-
-    def to_dict(self):
-        return {
-            'receipt_id': self.receipt_number,
-            'items': self.items,
-            'total': self.total,
-            'date': self.date
-        }
+        total = sum(int(item['quantity']) * float(item['price']) for item in self.items)
+        return total + self.calculate_vat()
 
     def generate_receipt(self):
         receipt_str = f"Receipt Number: {self.receipt_number}\n"
         receipt_str += f"Date: {self.date}\n"
         receipt_str += "Items:\n"
         for item in self.items:
-            receipt_str += f"{item['item']} x {item['quantity']} @ {item['price']} each\n"
-        receipt_str += f"VAT: {currency}{self.vat:.2f}\n"
+            receipt_str += f"{item['item']} x {item['quantity']} @ {currency}{item['price']} each\n"
+        receipt_str += f"Subtotal: {currency}{self.total - self.vat:.2f}\n"
+        receipt_str += f"VAT ({self.vat_rate}%): {currency}{self.vat:.2f}\n"
         receipt_str += f"Total: {currency}{self.total:.2f}\n"
-        return receipt_str
-    
-    def print_receipt(self):
-        # Initialize the printer (adjust vendor_id and product_id to match your printer)
-        p = Usb(0x0416, 0x5011)  # Example vendor_id and product_id for Epson printers
-        print("RECEIPT NUMBER: ", self.receipt_number) #DEBUG PRINT
-        # Print the receipt
-        p.text(f"Receipt Number: {self.receipt_number}\n")
-        print("We got here!")
-        p.text(f"Date: {self.date}\n")
-        p.text("Items:\n")
-        for item in self.items:
-            p.text(f"{item['item']} x {item['quantity']} @ {item['price']} each\n")
-        p.text(f"VAT: ${self.vat:.2f}\n")
-        p.text(f"Total: ${self.total:.2f}\n")
+        
+        # Return the receipt details as a dictionary
+        return {
+            'receipt': receipt_str,
+            'receipt_id': self.receipt_number,
+            'items': self.items,
+            'subtotal': self.total - self.vat,
+            'vat': self.vat,
+            'total': self.total,
+            'date': self.date
+        }
 
-        # Cut the paper
-        p.cut()
+
 #––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
 
 
-def reprint_receipt(receipt_number):
+def print_receipt(receipt_number):
     global vat_rate, sales_path
-    try:        
+    try:
+        #receipt_number = int(request.args.get('receipt_number'))        
         receipt_number = int(receipt_number)
         # Read all lines from the sales file
         with open(sales_path, 'r') as file:
@@ -106,8 +90,8 @@ def reprint_receipt(receipt_number):
                 date = transaction['date']
                 items = transaction['items']
                 receipt = Receipt(date, receipt_number, items, vat_rate)
-                print(receipt.print_receipt())
-                return jsonify(receipt=receipt.print_receipt()), 200
+                #print(receipt.generate_receipt())
+                return receipt.generate_receipt(), 200
 
         return jsonify(message="Receipt not found"), 404
     except Exception as e:
@@ -301,9 +285,9 @@ def checkout():
             update_stock_count(items)
             #print(items)
             receipt = Receipt(date, receipt_number, items, vat_rate)  #bugs to be fixed
-            print(receipt.generate_receipt())        #bugs to be fixed
+            #print("Generated Receipt: ", receipt.generate_receipt())        #bugs to be fixed
         items.clear()
-        return jsonify(message="Checkout successful"), 200
+        return str(receipt_number), 200
     except Exception as e:
         print(str(e))        
         return str(e), 500
@@ -317,13 +301,13 @@ def generate_receipt_number():
     with open(sales_path, 'r') as file:
         lines = file.readlines()
         if not lines:
-            return 1001
+            return 1010101
         last_line = lines[-1]
         last_transaction = json.loads(last_line)
         return last_transaction['receipt_number'] + 1
     
     
-def recent_transactions():
+def recent_transactions2():
     global vat_rate, recent_trans, currency
     recent_trans = []  # Initialize the recent transactions list
 
@@ -355,6 +339,40 @@ def recent_transactions():
                 'trans_total': trans_total      #f"{currency}{trans_total:.2f}"
             })
         
+        return recent_trans
+    except Exception as e:
+        return str(e)
+    
+    
+def recent_transactions():
+    global vat_rate, recent_trans, currency
+    recent_trans = []  # Initialize the recent transactions list
+
+    try:
+        # Read all lines from the file
+        with open(sales_path, 'r') as file:
+            all_transactions = file.readlines()
+        
+        # Get the last 10 transactions
+        recent = all_transactions[-10:]
+        if not recent:
+            return "No recent transactions"
+        
+        # Process the transactions
+        for trans_str in recent:
+            trans = json.loads(trans_str)  # Parse JSON string to a dictionary
+            trans_receipt = trans['receipt_number']
+            trans_date = trans['date']
+            trans_type = trans['transaction_type']  # Access the items correctly
+            trans_total = trans['total']
+
+            recent_trans.append({
+                'trans_receipt': trans_receipt,
+                'trans_date': trans_date,
+                'trans_total': trans_total,      #f"{currency}{trans_total:.2f}"
+                'trans_type': trans_type
+            })
+        recent_trans = [trans for trans in recent_trans if trans['trans_type'] == 'credit' or trans['trans_type'] == 'return']
         return recent_trans
     except Exception as e:
         return str(e)
@@ -602,7 +620,7 @@ def report_expenditure():
         receipt_number= generate_receipt_number()
         date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         attendant = session['name']
-        items = {'reporter':reporter, 'location':location, 'category':category, 'description':description, 'price':amount}
+        items = [{'reporter':reporter, 'location':location, 'category':category, 'description':description, 'price':amount}]
         sale={"receipt_number":receipt_number, "date":date, "items":items, "transaction_type":"debit", 'attendant':attendant, 'price': 0-amount, 'vat':0, 'total':0-amount}
         items_str = json.dumps(sale)      
         with open(sales_path, 'a') as file:

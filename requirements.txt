@@ -1,6 +1,0 @@
-flask
-requests
-flask-socketio
-schedule
-python-escpos
-pyusb
